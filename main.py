@@ -3,10 +3,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-def read_data():
-    col_name = 'Team TimeStamp Temperture Humidity Pressure PM1_0 PM2_5 PM10 CO2'.split()
-    df = pd.read_csv(r"Data_txt_raw/14-7-2023 (raw-1hour-open door).txt", names=col_name)
-    return df
+def read_data(path_file, col_name):
+    return pd.read_csv(path_file, names=col_name)
 def filter(df, condition=None):
     data = df[(df[condition]>0)][condition].dropna()
     data = data[(data[condition[-1]]<2000)].dropna()
@@ -84,8 +82,10 @@ def graph(data):
     plt.suptitle("AIR SENSE")
     plt.show()
 def main():
+    col_name = 'Team TimeStamp Temperture Humidity Pressure PM1_0 PM2_5 PM10 CO2'.split()
+    path_file = "Data_txt_raw/14-7-2023 (raw-1hour-open door).txt"
     condition = 'Temperture Humidity Pressure PM1_0 PM2_5 PM10 CO2'.split()
-    df = read_data()
+    df = read_data(path_file, col_name)
     data, data_cp = filter(df, condition)
 
     list_error = cal_error(df, condition)
