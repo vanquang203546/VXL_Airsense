@@ -7,12 +7,8 @@ def read_data(path_file, col_name):
     return pd.read_csv(path_file, names=col_name)
 def filter(df, params=None):
     data = df[(df[params]>0)][params].dropna()
-    data = data[(data[params[-1]]<2000)].dropna()
-    data = data[(data[params[3]]<4294967295)].dropna()
-    data = data[(data[params[4]]<4294967295)].dropna()
-    data = data[(data[params[5]]<4294967295)].dropna()
-    data_cp = data.copy()
-    return (data, data_cp)
+    data = data[(data[params[3]]<4294967295) & (data[params[4]]<4294967295) & (data[params[5]]<4294967295) & (data[params[-1]]<2000)].dropna()
+    return (data, data.copy())
 def cal_error(df, params):
     list_error = []
     T = pow(10,10)
