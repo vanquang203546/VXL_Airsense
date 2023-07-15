@@ -5,14 +5,10 @@ import matplotlib.pyplot as plt
 
 def read_data(path_file, col_name):
     return pd.read_csv(path_file, names=col_name)
-def filter(df, params=None):
+def filter(df, params):
     data = df[(df[params]>0)][params].dropna()
-    data = data[(data[params[-1]]<2000)].dropna()
-    data = data[(data[params[3]]<4294967295)].dropna()
-    data = data[(data[params[4]]<4294967295)].dropna()
-    data = data[(data[params[5]]<4294967295)].dropna()
-    data_cp = data.copy()
-    return (data, data_cp)
+    data = data[(data[params[3]]<4294967295) & (data[params[4]]<4294967295) & (data[params[5]]<4294967295) & (data[params[-1]]<2000)].dropna()
+    return (data, data.copy())
 def cal_error(df, params):
     list_error = []
     T = pow(10,10)
@@ -21,14 +17,14 @@ def cal_error(df, params):
         error = len(df[(df[params[i]]>0) & (df[params[i]] < thres[i])])/len(df)
         list_error.append(1-error)
     return list_error
-def save_data(data, params):
-    folder = 'Data_excel/1hour'
-    type='-1hour-close door'
+def save_data(data, params, time, type, index=False):
+    folder = 'Data_excel/{}'.format(time)
+    type='-{}-{}'.format(time, type)
     for i in range(data.shape[1]):
-        name = params[i] + type + '.csv'
-        path_file = os.path.join(folder, name)
-        data[params[i]].to_csv(path_file, index=False)
-def show_info(data,df, params, list_error):
+        name_file = params[i] + type + '.csv'
+        path_file = os.path.join(folder, name_file)
+        data[params[i]].to_csv(path_file, index=index)
+def show_info(data, df, params, list_error):
     data = data.values
     name_arg = 'Nhiệt độ,Độ ẩm,Áp suất,PM1_0,PM2_5,PM10,CO2'.split(',')
     for i in range(len(name_arg)):
@@ -83,13 +79,19 @@ def graph(data):
     plt.show()
 def main():
     col_name = 'Team TimeStamp Temperture Humidity Pressure PM1_0 PM2_5 PM10 CO2'.split()
-    path_file = "Data_txt_raw/14-7-2023 (raw-1hour-open door).txt"
     params = 'Temperture Humidity Pressure PM1_0 PM2_5 PM10 CO2'.split()
+    path_file = "Data_txt_raw/14-7-2023 (raw-1hour-open door).txt" #change path_file
+    time = '1hour' #7days
+    type = 'open door' #close door
+
     df = read_data(path_file, col_name)
     data, data_cp = filter(df, params)
 
     list_error = cal_error(df, params)
-    show_info(data_cp, df, params, list_error)
+    # show_info(data_cp, df, params, list_error)
 
-    graph(data)
+    # save_data(data_cp, params, time, type)
+    # graph(data)
 main()
+#df: dataframe before use filters
+#data: dataframe after use filters
