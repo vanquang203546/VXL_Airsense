@@ -5,30 +5,30 @@ import matplotlib.pyplot as plt
 
 def read_data(path_file, col_name):
     return pd.read_csv(path_file, names=col_name)
-def filter(df, condition=None):
-    data = df[(df[condition]>0)][condition].dropna()
-    data = data[(data[condition[-1]]<2000)].dropna()
-    data = data[(data[condition[3]]<4294967295)].dropna()
-    data = data[(data[condition[4]]<4294967295)].dropna()
-    data = data[(data[condition[5]]<4294967295)].dropna()
+def filter(df, params=None):
+    data = df[(df[params]>0)][params].dropna()
+    data = data[(data[params[-1]]<2000)].dropna()
+    data = data[(data[params[3]]<4294967295)].dropna()
+    data = data[(data[params[4]]<4294967295)].dropna()
+    data = data[(data[params[5]]<4294967295)].dropna()
     data_cp = data.copy()
     return (data, data_cp)
-def cal_error(df, condition):
+def cal_error(df, params):
     list_error = []
     T = pow(10,10)
     thres = [T, T, T, 4294967295, 4294967295, 4294967295, 2000]
-    for i in range(len(condition)):
-        error = len(df[(df[condition[i]]>0) & (df[condition[i]] < thres[i])])/len(df)
+    for i in range(len(params)):
+        error = len(df[(df[params[i]]>0) & (df[params[i]] < thres[i])])/len(df)
         list_error.append(1-error)
     return list_error
-def save_data(data, condition):
+def save_data(data, params):
     folder = 'Data_excel/1hour'
     type='-1hour-close door'
     for i in range(data.shape[1]):
-        name = condition[i] + type + '.csv'
+        name = params[i] + type + '.csv'
         path_file = os.path.join(folder, name)
-        data[condition[i]].to_csv(path_file, index=False)
-def show_info(data,df, condition, list_error):
+        data[params[i]].to_csv(path_file, index=False)
+def show_info(data,df, params, list_error):
     data = data.values
     name_arg = 'Nhiệt độ,Độ ẩm,Áp suất,PM1_0,PM2_5,PM10,CO2'.split(',')
     for i in range(len(name_arg)):
@@ -84,12 +84,12 @@ def graph(data):
 def main():
     col_name = 'Team TimeStamp Temperture Humidity Pressure PM1_0 PM2_5 PM10 CO2'.split()
     path_file = "Data_txt_raw/14-7-2023 (raw-1hour-open door).txt"
-    condition = 'Temperture Humidity Pressure PM1_0 PM2_5 PM10 CO2'.split()
+    params = 'Temperture Humidity Pressure PM1_0 PM2_5 PM10 CO2'.split()
     df = read_data(path_file, col_name)
-    data, data_cp = filter(df, condition)
+    data, data_cp = filter(df, params)
 
-    list_error = cal_error(df, condition)
-    show_info(data_cp, df, condition, list_error)
+    list_error = cal_error(df, params)
+    show_info(data_cp, df, params, list_error)
 
     graph(data)
 main()
