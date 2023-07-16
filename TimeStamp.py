@@ -11,7 +11,3 @@ def show_details(timestamp):
     time = dt.strftime("%H:%M:%S")
     print("Ngày: ", date)
     print("Giờ: ", time)
-def main():
-    timestamp = 1686755697
-    show_details(timestamp)
-main()
