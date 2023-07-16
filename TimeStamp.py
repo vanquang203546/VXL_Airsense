@@ -7,6 +7,7 @@ def subtract_days(timestamp, days):
     return new_timestamp
 def show_details(timestamp):
     dt = datetime.datetime.fromtimestamp(timestamp)
+    dt += datetime.timedelta(days=30)
     date = dt.strftime("%d/%m/%Y")
     time = dt.strftime("%H:%M:%S")
     print("Ngày: ", date)
